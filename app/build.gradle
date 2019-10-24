@@ -104,5 +104,5 @@ dependencies {
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     //OpenCV
-//    implementation project(path: ':opencv-sdk')
+    implementation project(path: ':opencv-sdk')
 }
