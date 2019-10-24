@@ -92,7 +92,7 @@ public class OpenCVImgProcFragment extends XPageFragment {
 
 
     @SingleClick
-    @OnClick({R.id.btn_select, R.id.btn_camera, R.id.btn_cvtcolor, R.id.btn_threshold, R.id.btn_threshold_red})
+    @OnClick({R.id.btn_select, R.id.btn_camera, R.id.btn_cvtcolor, R.id.btn_threshold, R.id.btn_threshold_red, R.id.btn_threshold_blue, R.id.btn_threshold_colour})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_select:
@@ -112,6 +112,14 @@ public class OpenCVImgProcFragment extends XPageFragment {
             case R.id.btn_threshold_red:
                 //去红
                 clearRed();
+                break;
+            case R.id.btn_threshold_blue:
+                //去蓝
+                clearBlue();
+                break;
+            case R.id.btn_threshold_colour:
+                //去彩色
+                clearColour();
                 break;
             default:
                 break;
@@ -152,6 +160,27 @@ public class OpenCVImgProcFragment extends XPageFragment {
         }
 
         ivContent.setImageBitmap(ImageProcessUtils.clearRed(mImagePath, 125));
+    }
+
+    /**
+     * 去蓝
+     */
+    private void clearBlue() {
+        if (StringUtils.isEmpty(mImagePath)) {
+            ToastUtils.toast("请先选择图片！");
+            return;
+        }
+
+        ivContent.setImageBitmap(ImageProcessUtils.clearBlue(mImagePath, 125));
+    }
+
+    private void clearColour() {
+        if (StringUtils.isEmpty(mImagePath)) {
+            ToastUtils.toast("请先选择图片！");
+            return;
+        }
+
+//        ivContent.setImageBitmap(ImageProcessUtils.clearColour(mImagePath, 125));
     }
 
     @Permission(STORAGE)

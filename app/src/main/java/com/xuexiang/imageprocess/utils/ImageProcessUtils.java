@@ -168,19 +168,58 @@ public final class ImageProcessUtils {
         return result;
     }
 
+    public static Bitmap clearBlue(String imgPath, int thresh) {
+        if (!FileUtils.isFileExists(imgPath)) {
+            return null;
+        }
+        Mat src = Imgcodecs.imread(imgPath);
+        //去蓝
+        Mat dst = clearBlue(src, thresh);
+        Bitmap result = mat2Bitmap(dst);
+        src.release();
+        dst.release();
+        return result;
+    }
+
+
+    public static Bitmap clearColour(String imgPath, int thresh) {
+        if (!FileUtils.isFileExists(imgPath)) {
+            return null;
+        }
+        Mat src = Imgcodecs.imread(imgPath);
+        //去彩色
+        Mat dst = clearColour(src, thresh);
+        Bitmap result = mat2Bitmap(dst);
+        src.release();
+        dst.release();
+        return result;
+    }
+
     //====================================基础方法===============================================//
 
     /**
-     * 默认二值化最大阀值
+     * 默认二值化最大阈值
      */
     public static final int DEFAULT_THRESH_MAX_VALUE = 255;
+    /**
+     * 蓝色通道
+     */
+    public static final int BLUE_CHANNEL_INDEX = 0;
+    /**
+     * 绿色通道
+     */
+    public static final int GREEN_CHANNEL_INDEX = 1;
+    /**
+     * 红色通道
+     */
+    public static final int RED_CHANNEL_INDEX = 2;
 
 
     /**
      * 去红
      *
      * @param src
-     * @param thresh 阀值
+     * @param thresh 阈值
      * @return
      */
     public static Mat clearRed(Mat src, double thresh) {
@@ -191,30 +230,91 @@ public final class ImageProcessUtils {
      * 去红
      *
      * @param src
-     * @param thresh 阀值
+     * @param thresh 阈值
      * @param maxval 最大阈值， 一般为255
      */
     public static Mat clearRed(Mat src, double thresh, double maxval) {
+        return clearColor(src, RED_CHANNEL_INDEX, thresh, maxval);
+    }
+
+
+    /**
+     * 去蓝
+     *
+     * @param src
+     * @param thresh 阈值
+     */
+    public static Mat clearBlue(Mat src, double thresh) {
+        return clearBlue(src, thresh, DEFAULT_THRESH_MAX_VALUE);
+    }
+
+    /**
+     * 去蓝
+     *
+     * @param src
+     * @param thresh 阈值
+     * @param maxval 最大阈值， 一般为255
+     */
+    public static Mat clearBlue(Mat src, double thresh, double maxval) {
+        return clearColor(src, BLUE_CHANNEL_INDEX, thresh, maxval);
+    }
+
+    /**
+     * 去除指定通道上的颜色
+     *
+     * @param src
+     * @param channelIndex 颜色通道：0-蓝色，1-绿色，2-红色
+     * @param thresh       阈值
+     * @param maxval       最大阈值， 一般为255
+     */
+    public static Mat clearColor(Mat src, int channelIndex, double thresh, double maxval) {
         if (src == null) {
             return null;
         }
 
-        //获取红色通道
+        //获取指定通道颜色
         List<Mat> channel = new ArrayList<>();
         Core.split(src, channel);
-        Mat red = channel.get(2);
+        Mat color = channel.get(channelIndex);
 
         Mat dst = new Mat();
-        Imgproc.threshold(red, dst, thresh, maxval, THRESH_BINARY);
+        Imgproc.threshold(color, dst, thresh, maxval, THRESH_BINARY);
         return dst;
     }
 
 
     /**
+     * 去除彩色
+     *
+     * @param src
+     * @param thresh 阈值
+     */
+    public static Mat clearColour(Mat src, double thresh) {
+        return clearColour(src, thresh, DEFAULT_THRESH_MAX_VALUE);
+    }
+
+    /**
+     * 去除彩色
+     *
+     * @param src
+     * @param thresh 阈值
+     * @param maxval 最大阈值， 一般为255
+     */
+    public static Mat clearColour(Mat src, double thresh, double maxval) {
+        if (src == null) {
+            return null;
+        }
+
+        Mat dst = new Mat();
+
+        return dst;
+    }
+
+    /**
      * 二值化
      *
      * @param src
-     * @param thresh 阀值
+     * @param thresh 阈值
      * @return
      */
     public static Mat binary(Mat src, double thresh) {
@@ -225,7 +325,7 @@ public final class ImageProcessUtils {
      * 二值化
      *
      * @param src
-     * @param thresh 阀值
+     * @param thresh 阈值
      * @param maxval 最大阈值， 一般为255
      * @return
      */
@@ -282,5 +382,6 @@ public final class ImageProcessUtils {
         Utils.matToBitmap(mat, bitmap);
         return bitmap;
     }
+
 
 }
